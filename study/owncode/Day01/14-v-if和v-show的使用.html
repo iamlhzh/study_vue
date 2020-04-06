@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./lib/vue-2.4.0.js"></script>
+</head>
+<body>
+    <div id="app">
+      <input type="button" @click="toggle" value="闪现">
+      <input type="button" @click="flag=!flag" value="闪现">
+      <!-- v-if 的特点:每次都会重新删除或创建元素 -->
+      <!-- v-show 的特点: 每次不回重新进行DOM的删除和创建操作,只是切换了元素的display:none样式-->
+      <h3 v-if="flag">这是一条用v-if控制的元素</h3>
+      <h3 v-show="flag">这是一条用v-show控制的元素</h3>
+    </div>
+    <script>
+         var vm=new Vue({
+            el:'#app',
+            data:{
+              flag:true
+            },
+            methods:{
+              toggle(){
+                this.flag=!this.flag;
+              }
+            }
+         });
+     </script>
+</body>
+
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./lib/vue-2.4.0.js"></script>
+    <link rel="stylesheet" href="./lib/bootstrap-3.3.7.css">
+</head>
+<body>
+    <div id="app">
+      <com1 @fun1="loadComments"></com1>
+
+      <ul class="list-group">
+        <li class="list-group-item" v-for="item in list" :key="item.id">
+          <span class="badge">评论人:{{item.name}}</span>
+          {{item.content}}
+        </li>
+      </ul>
+    </div>
+    <template id="tmp1">
+      <div>
+        <div class="form-group">
+          <label>评论人:</label>
+          <input type="text" class="form-control" v-model="name">
+        </div>
+        <div class="form-group">
+            <label>评论内容:</label>
+            <textarea class="form-control" v-model="content"></textarea>
+        </div>
+        <div class="form-group">
+          <input type="button" value="发表评论" class="btn btn-primary" @click="postComment">
+        </div>
+      </div>
+    </template>
+
+    <script>
+      var commentBox1={
+        data(){
+          return{
+            name:'',
+            content:''
+          }
+        },
+        template:'#tmp1',
+        methods:{
+          postComment(){//发表评论的方法
+          //分析:发表评论的业务逻辑
+          //1.评论数据存到哪里去???  存放倒了localStorage中 localStorage.setItem('cmts','')
+          //2.先组织出一个最新的评论数据对象
+          //3.想办法把第二步中得到的评论对象,保存到localStorage中
+          // 3.1 localStorage只支持存放字符串数据,要先调用JSON.stringify
+          // 3.2在保存最新的评论数据之前,要先从localStorage获取到之前的评论数据(string),转
+          //换成为一个数组对象,然后,把最新的评论,push到这个数组
+          // 3.3如果获取到的localStorage中评论字符串,为空不存在,则可以返回一个''
+          // 让JSON.parse去转换
+          // 3.4 把最新的评论列表数组,再次调用JSON.stringify转为数组字符串,然后调用localStorage.setItem()
+            var comment={id:Date.now(),name:this.name,content:this.content};
+            //从localStorage中获取所有的评论
+            var list=JSON.parse(localStorage.getItem('cmts')||'[]')
+            list.unshift(comment)
+            //重新保存最新的评论数据
+            localStorage.setItem('cmts',JSON.stringify(list))
+            this.name=this.content=''
+            this.$emit('fun1');
+          }
+        }
+      }
+         var vm=new Vue({
+            el:'#app',
+            data:{
+              list:[
+                {id:Date.now(),name:'文天祥',content:'人生自古谁无死'},
+                {id:Date.now(),name:'李白',content:'古来圣贤皆寂寞'},
+                {id:Date.now(),name:'杜甫',content:'安得广厦千万间'},
+              ]
+            },
+            methods:{
+              loadComments(){//从本地的localStorage中,加载评论列表
+                this.list=JSON.parse(localStorage.getItem('cmts')||'[]')
+              }
+            },
+            components:{
+              'com1':commentBox1
+            },
+            created(){
+              this.loadComments();
+            }
+         });
+     </script>
+</body>
+
+</html>

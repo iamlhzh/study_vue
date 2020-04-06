@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <!--1.导入vue的包 -->
+  <script src="./lib/vue-2.4.0.js"></script>
+</head>
+<body>
+  <!-- 2.创建一个要控制的区域 -->
+  <div id="app">
+    <input type="button" value="浪起来" @click="lang">
+    <input type="button" value="低调" @click="stop">
+    <h4>{{msg}}</h4>
+  </div>
+
+  <script>
+    var vm=new Vue({
+      el:'#app',
+      data:{
+        msg:'猥琐发育,别浪~~!',
+        intevalId:null,
+      },
+      methods:{
+            lang(){
+              //如果定时器已经开启,则不需要再次开启
+              if(this.intevalId!=null){
+                return;
+              }
+              this.intevalId=setInterval( () => {
+                console.log(this.msg);
+                var start = this.msg.substring(0,1);
+                var end =this.msg.substring(1);
+                this.msg = end + start; 
+              },400)
+              
+            },
+            stop(){//停止定时器
+              clearInterval(this.intevalId);
+              //每当清除了计时器时候,需要把intervalId重置为null
+              this.intevalId=null;
+            }
+
+      }
+    })
+  </script>
+</body>
+</html>
